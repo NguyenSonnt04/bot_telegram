@@ -1,0 +1,44 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Node.js
+node_modules/
+.next/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Runtime data
+logs/
+tmp/
+data/
+uploads/
+
+# Local certificates and keys
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Harness core maintenance binary
+scripts/bin/harness
+scripts/bin/harness.exe
