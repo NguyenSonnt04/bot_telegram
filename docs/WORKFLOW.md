@@ -120,9 +120,41 @@ Harness for that new purpose. When the user explicitly invokes
 Do not claim improvement when the rerun did not retrieve or exercise the
 intervention. Keep the record active while fresh-rerun evidence is pending.
 
+## Cross-Session Handoff
+
+Repository and Git state, not chat history, must be sufficient to continue
+authorized work.
+
+Before ending a coding task:
+
+1. Update only the canonical owners whose truth changed: product documents for
+   behavior, decisions for lasting choices, runbooks for verified operation,
+   code and tests for executable behavior, and the existing durable plan for
+   task-local state.
+2. Distinguish delivery state precisely: working-tree only, committed, pushed,
+   pull request opened, or merged. Work on a feature branch is not authority on
+   `main` until it is merged.
+3. If unfinished work cannot be resumed safely from the diff and Git history,
+   create or update one plan in `docs/plans/active/`. Record current progress,
+   proof, blockers, branch and delivery state, and the next safe action before
+   the session ends.
+4. When durable work is complete, record final validation, delivery state,
+   unresolved follow-up, and the next safe action, then move its plan to
+   `docs/plans/completed/`.
+5. Do not create a per-session summary, global status file, task database, or
+   duplicate product state for bounded work. Its code, tests, canonical
+   documentation, Git history, and delivery state are the handoff.
+
+At the start of a later session, inspect the current branch, working tree, and
+recent Git history before trusting implementation-status claims. Read an active
+plan only when continuing that durable work. Treat completed plans as historical
+evidence and verify whether their commit or pull request reached the branch that
+now owns product authority.
+
 ## Completion Standard
 
 A change is complete when the outcome exists or its blocker is explicit,
 repository truth remains current, behavior-appropriate proof passed or its gap
-is disclosed, any required plan is current, and the report separates facts,
-limits, and unattempted work. Descriptions do not replace observed proof.
+is disclosed, any required plan and cross-session handoff are current, and the
+report separates facts, delivery state, limits, next action, and unattempted
+work. Descriptions do not replace observed proof.

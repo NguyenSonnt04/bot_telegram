@@ -48,6 +48,18 @@ Keep | Revise | Remove | Pending fresh rerun
 Record the evidence and reason. Do not claim improvement while the rerun is
 pending or did not exercise the intervention.
 
+## Handoff
+
+- Current branch:
+- Working tree:
+- Delivery state: working-tree only | committed | pushed | pull request opened
+  | merged
+- Commit or pull request:
+- Remaining blockers or follow-up:
+- Next safe action:
+
+Keep this section current whenever the experiment pauses or changes sessions.
+
 ## Result
 
 Record the bounded conclusion, limitations, follow-up, and retained or removed
