@@ -2,21 +2,26 @@
 
 Start with the smallest authoritative surface.
 
-## Current Product
+## Repository Authority
 
+- Root [`README.md`](../README.md): current product scope, architecture,
+  security boundaries, technology choices, roadmap, and implementation status.
 - `WORKFLOW.md`: request shape, planning, judgment, operation, validation, and
   completion.
-- `ARCHITECTURE.md`: current product, code, state, update, and ownership
-  boundaries.
-- `HARNESS.md`: product principles and installed-core model.
-- `product/`: current product behavior and installation contract.
-- `decisions/`: lasting choices future work must inherit.
-- `plans/`: one durable working-memory document for work that needs it.
-- [`patterns/encoding-invariants.md`](patterns/encoding-invariants.md): turn
-  accepted architecture, reliability, security, and quality rules into native
-  mechanical validation.
-- `templates/`: optional decision, plan, runbook, and Harness-improvement
-  structures.
+- `product/`: focused living product contracts as they are accepted.
+- `decisions/`: lasting product, architecture, data, security, compatibility,
+  and validation choices.
+- `plans/`: durable working memory only for work that needs cross-session
+  recovery or coordination.
+- `runbooks/`: verified application startup, readiness, interface, evidence, and
+  cleanup procedures.
+- [`patterns/encoding-invariants.md`](patterns/encoding-invariants.md):
+  mechanical enforcement method for accepted architecture, reliability,
+  security, and quality rules.
+- `templates/`: optional structures for decisions, plans, runbooks, and Harness
+  improvements.
+- `../apps/`, `../packages/`, `../tests/`, configuration, and runtime signals:
+  executable and observable behavior.
 
 ## Consumer-Owned Truth
 
@@ -24,17 +29,15 @@ The consumer's README, product documents, architecture, code, tests, CI,
 runtime signals, and application behavior remain authoritative. Harness does
 not overwrite those with upstream product assumptions.
 
-## Source Repository
+## Installed Harness
 
-- Root `README.md`: product overview, installation, maintenance, EOL, and
-  development.
-- `crates/harness/`: safe core installer/updater.
-- `scripts/`: platform bootstrap, release, and validation entrypoints.
-- `tests/`: behavior ownership and repository contract.
+- [`../AGENTS.md`](../AGENTS.md): agent entrypoint and authority boundary.
+- `.agents/skills/`: installed repository skills.
+- `.harness-core/manifest.json`: installed core version and managed-file
+  provenance.
+- `../scripts/bin/harness.exe`: Windows maintenance interface for status,
+  doctor, install, and conflict-safe updates.
 
-## History
-
-The former SQLite control plane, protocol v1, story packets, migration evidence,
-and compatibility documentation are preserved by Git history and immutable
-`harness-cli-v*` tags. They are intentionally absent from the current tree so
-search and agent retrieval return current product authority.
+Harness supplies workflow and maintenance capability. It does not replace
+consumer product authority or require upstream source-tree documentation in
+this repository.
