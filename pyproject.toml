@@ -20,3 +20,33 @@ members = [
     "apps/api-service",
     "apps/bot-service",
 ]
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.10.0",
+    "pytest>=9.1.1",
+    "ruff>=0.16.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "apps/api-service/tests",
+    "apps/bot-service/tests",
+    "tests",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+src = [
+    "apps/api-service/src",
+    "apps/bot-service/src",
+]
+extend-exclude = [
+    ".agents",
+    ".harness-core",
+    ".venv",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]

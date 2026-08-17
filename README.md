@@ -442,6 +442,43 @@ uv sync --frozen --no-dev
 Dependency phải được khai báo trong `pyproject.toml`; không sửa `uv.lock` bằng
 tay.
 
+### API foundation
+
+Chạy FastAPI local từ root workspace:
+
+```powershell
+uv run uvicorn api_service.main:app --reload
+```
+
+Các endpoint nền tảng:
+
+| Endpoint | Ý nghĩa |
+| --- | --- |
+| `GET /health` | Xác nhận tiến trình API đang phản hồi |
+| `GET /ready` | Xác nhận ứng dụng FastAPI đã khởi tạo |
+
+`/ready` chưa kiểm tra PostgreSQL cho đến khi database foundation được triển
+khai. API nghiệp vụ được đặt dưới prefix `/api/v1`.
+
+Response lỗi công khai dùng cấu trúc:
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Safe public message."
+  }
+}
+```
+
+Chạy validation:
+
+```powershell
+uv run pytest
+uv run ruff format --check .
+uv run ruff check .
+```
+
 ## Cấu trúc thư mục dự kiến
 
 ```text
@@ -568,7 +605,16 @@ Việc thêm provider mới không được yêu cầu sửa luồng đặt hàn
 
 ## Biến môi trường
 
-File `.env.example` sẽ được bổ sung khi bắt đầu dựng backend. Các nhóm cấu hình dự kiến:
+File `.env.example` hiện chứa hai biến của API foundation với giá trị để trống:
+
+```dotenv
+APP_ENV=
+LOG_LEVEL=
+```
+
+Giá trị trống giữ nguyên default `development` và `INFO`. Các nhóm cấu hình
+dưới đây là phạm vi dự kiến, chưa phải toàn bộ nội dung hiện có của
+`.env.example`:
 
 ```dotenv
 # Application
@@ -673,7 +719,7 @@ Không điền dữ liệu thật vào `.env.example`.
 - [x] Tạo database và user riêng cho ứng dụng.
 - [x] Viết tài liệu tổng quan.
 - [x] Khởi tạo Python 3.13 và uv workspace.
-- [ ] Khởi tạo backend FastAPI.
+- [x] Khởi tạo backend FastAPI.
 - [ ] Khởi tạo Telegram bot.
 - [ ] Thiết kế database và migration.
 - [ ] Khởi tạo trang quản trị.
