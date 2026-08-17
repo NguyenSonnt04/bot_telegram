@@ -400,8 +400,10 @@ Server tra bot bằng `bot_public_id`, xác minh secret, lấy `tenant_id` rồi
 
 | Thành phần | Công nghệ dự kiến |
 | --- | --- |
-| Telegram bot | Python, aiogram 3 |
-| API server | Python, FastAPI |
+| Python runtime | Python 3.13 |
+| Python tooling | uv workspace, `pyproject.toml`, `uv.lock` |
+| Telegram bot | aiogram 3 |
+| API server | FastAPI |
 | ORM | SQLAlchemy 2 |
 | Migration | Alembic |
 | Admin client | Next.js, TypeScript |
@@ -596,7 +598,9 @@ Không điền dữ liệu thật vào `.env.example`.
 
 ### Giai đoạn 1: nền tảng backend
 
-- Khởi tạo cấu trúc Python.
+- Khởi tạo Python 3.13 và uv workspace.
+- Tạo `pyproject.toml` cho root, `api-service` và `bot-service`.
+- Tạo và commit `uv.lock`.
 - Kết nối PostgreSQL bằng SQLAlchemy.
 - Thiết lập Alembic và migration đầu tiên.
 - Xây dựng cấu hình, logging và xử lý lỗi chung.

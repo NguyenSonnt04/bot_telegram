@@ -70,6 +70,10 @@ For every request concerning this repository:
 - SePay and Binance Pay webhooks belong to `api-service`.
 - ACB bank transfers are reconciled through SePay. Do not add a direct ACB
   Internet Banking connector unless repository authority is explicitly changed.
+- Python applications use Python 3.13 and the root uv workspace. Dependency
+  changes must use `pyproject.toml` and regenerate the committed `uv.lock`.
+- Do not introduce pip requirements files or Poetry unless decision 0001 is
+  explicitly superseded.
 - Tenant-owned bot tokens and payment credentials belong in encrypted database
   configuration, not source code or tenant-specific `.env` entries.
 - Every tenant-scoped operation must derive trusted tenant context and prevent
