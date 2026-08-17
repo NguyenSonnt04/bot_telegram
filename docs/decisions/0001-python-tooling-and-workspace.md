@@ -56,7 +56,6 @@ Tradeoffs:
 
 ## Follow-Up
 
-- Create the root uv workspace when implementing backend foundation.
-- Add package metadata for `api-service` and `bot-service`.
-- Document exact development, test, migration, and VPS commands after those
-  commands exist and have been validated.
+- Add application-specific dependencies as each service is implemented.
+- Document exact migration and service startup commands after those commands
+  exist and have been validated.

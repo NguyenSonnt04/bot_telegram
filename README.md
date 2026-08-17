@@ -422,6 +422,26 @@ PostgreSQL được cài trực tiếp trên Windows, không dùng Docker. Cơ s
 
 Mật khẩu và chuỗi kết nối nằm trong file `.env`, không được ghi vào README hoặc commit lên Git.
 
+### Python workspace
+
+Hai ứng dụng Python dùng chung root uv workspace và một file `uv.lock`.
+
+```powershell
+uv sync
+uv run python -m unittest discover -s tests -v
+uv lock --check
+```
+
+`uv sync` tạo hoặc cập nhật root `.venv` và cài hai workspace package
+`tele-shop-api` cùng `tele-shop-bot`. Khi cài dependency đã khóa trên VPS:
+
+```powershell
+uv sync --frozen --no-dev
+```
+
+Dependency phải được khai báo trong `pyproject.toml`; không sửa `uv.lock` bằng
+tay.
+
 ## Cấu trúc thư mục dự kiến
 
 ```text
@@ -652,6 +672,7 @@ Không điền dữ liệu thật vào `.env.example`.
 - [x] Cài PostgreSQL 17 trên Windows.
 - [x] Tạo database và user riêng cho ứng dụng.
 - [x] Viết tài liệu tổng quan.
+- [x] Khởi tạo Python 3.13 và uv workspace.
 - [ ] Khởi tạo backend FastAPI.
 - [ ] Khởi tạo Telegram bot.
 - [ ] Thiết kế database và migration.

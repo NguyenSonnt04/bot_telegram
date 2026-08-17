@@ -1,0 +1,35 @@
+version = 1
+revision = 3
+requires-python = "==3.13.*"
+
+[manifest]
+members = [
+    "tele-shop-api",
+    "tele-shop-bot",
+    "tele-shop-workspace",
+]
+
+[[package]]
+name = "tele-shop-api"
+version = "0.1.0"
+source = { editable = "apps/api-service" }
+
+[[package]]
+name = "tele-shop-bot"
+version = "0.1.0"
+source = { editable = "apps/bot-service" }
+
+[[package]]
+name = "tele-shop-workspace"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "tele-shop-api" },
+    { name = "tele-shop-bot" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "tele-shop-api", editable = "apps/api-service" },
+    { name = "tele-shop-bot", editable = "apps/bot-service" },
+]
