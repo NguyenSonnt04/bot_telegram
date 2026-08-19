@@ -77,6 +77,22 @@ migrations.
 Public errors use an `error.code` and safe `error.message`. Unexpected exception
 details are not returned to clients.
 
+## Tenancy Foundation
+
+The API service persists tenants, global administrator identities, and tenant
+memberships. Alembic revision `0002_tenant_foundation` creates the corresponding
+PostgreSQL schema.
+
+Tenant-scoped membership access requires a `TenantContext`, and the
+`TenantMembershipRepository` derives its tenant predicate from that context. A
+PostgreSQL integration test verifies that a membership belonging to one tenant
+is not returned through another tenant's context.
+
+Authentication, trusted request-context derivation, and route-level
+authorization are not implemented yet. The current repository boundary and
+integration test do not by themselves establish an authenticated HTTP tenant
+boundary.
+
 ## Runtime Evidence
 
 Uvicorn writes startup, shutdown, and HTTP access lines to the process console.
@@ -110,5 +126,5 @@ consumer-facing PostgreSQL connectivity check.
 - Production worker count, bind address, process manager, and deployment
   lifecycle are not yet defined.
 - Request correlation and structured logging are not yet implemented.
-- Tenant, membership, and business-table schemas remain pending their focused
-  product and authorization design.
+- Business schemas beyond the tenant, administrator, and membership foundation
+  remain pending their focused product design.

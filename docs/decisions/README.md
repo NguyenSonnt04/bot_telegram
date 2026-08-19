@@ -12,3 +12,4 @@ documents here as real choices are accepted, then index them in this file.
 ## Accepted decisions
 
 - [0001 Python tooling and workspace](0001-python-tooling-and-workspace.md)
+- [0002 Tenant identity and membership](0002-tenant-identity-and-membership.md)

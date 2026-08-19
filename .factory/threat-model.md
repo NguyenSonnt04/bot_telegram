@@ -1,7 +1,7 @@
 # Threat Model for Telegram Digital Shop
 
 **Last Updated:** 2026-08-19
-**Version:** 1.1.0
+**Version:** 1.2.0
 **Methodology:** STRIDE + Natural Language Analysis
 
 ---
@@ -23,11 +23,12 @@ The repository defines three application boundaries:
 3. **Web admin** - Next.js administration interface that calls the API service
    and must not access PostgreSQL directly.
 
-Only the FastAPI foundation currently has executable code. It exposes
+Only the FastAPI service currently has executable code. It exposes
 `GET /health`, `GET /ready`, OpenAPI metadata, and a common public error
-contract. It owns an async SQLAlchemy connection manager, an Alembic migration
-baseline, and a PostgreSQL readiness probe. Authentication, tenant context,
-business-table persistence, payment processing, file delivery, and the web and
+contract. It owns an async SQLAlchemy connection manager, Alembic migrations,
+PostgreSQL readiness, tenant, administrator, and membership persistence, and a
+tenant-scoped membership repository. Authentication, trusted tenant-context
+derivation from requests, payment processing, file delivery, and the web and
 bot runtimes are not implemented yet.
 
 ### Key Components
@@ -51,8 +52,10 @@ to the API service, where signatures, provider identity, amount, order
 reference, and idempotency must be verified before an order or delivery changes.
 
 The current foundation opens PostgreSQL connections for readiness checks and
-can apply committed Alembic migrations. It has no business tables or persistent
-application-data flow.
+can apply committed Alembic migrations. It persists tenant identities, global
+administrator identities, and tenant memberships. The membership repository
+requires a `TenantContext` and derives its tenant predicate from that context,
+but no public request can create a trusted context yet.
 
 ---
 
@@ -184,10 +187,14 @@ webhook gateway, payment webhooks, and admin sessions.
 4. Attacker acts as another tenant or confirms an unpaid order.
 
 **Existing Mitigations:** Repository authority forbids trusting browser
-`tenant_id`, assigns webhook ownership, and requires webhook verification.
+`tenant_id`, assigns webhook ownership, and requires webhook verification. The
+membership repository rejects construction without `TenantContext`, always
+adds its tenant predicate, and has positive and negative PostgreSQL isolation
+proof.
 
-**Gaps:** Authentication, membership enforcement, bot lookup, webhook signature
-verification, and session security are not implemented.
+**Gaps:** Authentication, trusted `TenantContext` derivation, route-level
+membership enforcement, bot lookup, webhook signature verification, and
+session security are not implemented.
 
 **Severity:** CRITICAL | **Likelihood:** HIGH
 
@@ -231,11 +238,14 @@ actor or tenant.
 details, or logs record credentials or private inventory.
 
 **Existing Mitigations:** The current API returns generic unexpected errors and
-logs only method and path. Repository authority requires encrypted credentials,
-masked admin responses, and tenant-scoped operations.
+logs only method and path. The membership repository requires tenant context,
+uses parameterized SQLAlchemy statements, and proves that tenant A cannot
+retrieve tenant B membership. Repository authority requires encrypted
+credentials, masked admin responses, and tenant-scoped operations.
 
-**Gaps:** Tenant-scoped database query enforcement, secret encryption, object
-storage isolation, and business response schemas are not implemented.
+**Gaps:** Tenant scoping is not implemented for future business repositories,
+trusted request context and authorization are absent, and secret encryption,
+object storage isolation, and business response schemas are not implemented.
 
 **Severity:** CRITICAL | **Likelihood:** HIGH
 
@@ -394,3 +404,12 @@ administrator privileges, file upload, and any HIGH or CRITICAL finding.
 - Updated readiness behavior to include a safe PostgreSQL connectivity probe.
 - Distinguished migration infrastructure from still-unimplemented
   tenant-scoped business persistence.
+
+### Version 1.2.0 (2026-08-19)
+
+- Added tenant, administrator, and membership persistence to the current
+  architecture.
+- Added the mandatory `TenantContext` repository boundary and PostgreSQL
+  cross-tenant positive and negative proof.
+- Kept authentication, trusted request context derivation, RBAC, and
+  PostgreSQL Row-Level Security as explicit gaps.
