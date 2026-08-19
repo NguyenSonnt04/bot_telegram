@@ -23,4 +23,11 @@ async def readiness(request: Request) -> HealthResponse:
             detail="API service is not ready.",
         )
 
+    database = request.app.state.database
+    if database is None or not await database.is_ready():
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database is not ready.",
+        )
+
     return HealthResponse(status="ready")

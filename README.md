@@ -422,8 +422,8 @@ PostgreSQL được cài trực tiếp trên Windows, không dùng Docker. Cơ s
 
 - Host: `127.0.0.1`
 - Port: `5432`
-- Database: `tele_shop`
-- Application user: `tele_bot`
+- Database: `tele_shop_dev`
+- Application user: `tele_shop_api_dev`
 
 Mật khẩu và chuỗi kết nối nằm trong file `.env`, không được ghi vào README hoặc commit lên Git.
 
@@ -462,8 +462,8 @@ Các endpoint nền tảng:
 | `GET /health` | Xác nhận tiến trình API đang phản hồi |
 | `GET /ready` | Xác nhận ứng dụng FastAPI đã khởi tạo |
 
-`/ready` chưa kiểm tra PostgreSQL cho đến khi database foundation được triển
-khai. API nghiệp vụ được đặt dưới prefix `/api/v1`.
+`/ready` chỉ trả trạng thái `ready` khi ứng dụng đã khởi tạo và PostgreSQL phản
+hồi truy vấn kiểm tra `SELECT 1`. API nghiệp vụ được đặt dưới prefix `/api/v1`.
 
 Response lỗi công khai dùng cấu trúc:
 
@@ -725,8 +725,9 @@ Không điền dữ liệu thật vào `.env.example`.
 - [x] Viết tài liệu tổng quan.
 - [x] Khởi tạo Python 3.13 và uv workspace.
 - [x] Khởi tạo backend FastAPI.
+- [x] Khởi tạo kết nối PostgreSQL bằng SQLAlchemy và Alembic baseline.
 - [ ] Khởi tạo Telegram bot.
-- [ ] Thiết kế database và migration.
+- [ ] Thiết kế schema database và migration nghiệp vụ.
 - [ ] Khởi tạo trang quản trị.
 - [ ] Làm tenant, gói thuê và phân quyền thành viên.
 - [ ] Làm bot registry và webhook gateway.
