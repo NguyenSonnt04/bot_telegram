@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from api_service.config import Settings
 from api_service.infrastructure.database import Base
+from api_service.modules.tenancy import models as tenancy_models  # noqa: F401
 
 config = context.config
 

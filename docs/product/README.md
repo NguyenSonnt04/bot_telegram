@@ -12,10 +12,13 @@ files after actual product domains, such as `tenancy.md`, `catalog.md`,
 
 ## Current Product Contract
 
-No focused product-domain document has been accepted yet. Until one exists, use
-the root README, accepted decisions, implementation, and executable tests as
-the current consumer authority. Do not infer missing product policy from
-Harness templates or upstream source repositories.
+- [Tenancy](tenancy.md): tenant identity, administrator identity, membership
+  roles, lifecycle states, and the trusted tenant repository boundary.
+
+For domains without a focused document, use the root README, accepted
+decisions, implementation, and executable tests as current consumer authority.
+Do not infer missing product policy from Harness templates or upstream source
+repositories.
 
 ## Update Rule
 

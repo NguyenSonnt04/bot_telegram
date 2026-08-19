@@ -726,6 +726,7 @@ Không điền dữ liệu thật vào `.env.example`.
 - [x] Khởi tạo Python 3.13 và uv workspace.
 - [x] Khởi tạo backend FastAPI.
 - [x] Khởi tạo kết nối PostgreSQL bằng SQLAlchemy và Alembic baseline.
+- [x] Khởi tạo tenant identity, membership và kiểm thử cô lập tenant.
 - [ ] Khởi tạo Telegram bot.
 - [ ] Thiết kế schema database và migration nghiệp vụ.
 - [ ] Khởi tạo trang quản trị.
