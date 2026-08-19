@@ -1,8 +1,9 @@
 import logging
+from collections.abc import Awaitable, Callable
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from starlette.exceptions import HTTPException
 
 logger = logging.getLogger(__name__)
@@ -21,6 +22,27 @@ def error_content(*, code: str, message: str) -> dict[str, dict[str, str]]:
 
 
 def register_error_handlers(app: FastAPI) -> None:
+    @app.middleware("http")
+    async def handle_unexpected_error(
+        request: Request,
+        call_next: Callable[[Request], Awaitable[Response]],
+    ) -> Response:
+        try:
+            return await call_next(request)
+        except Exception:
+            logger.error(
+                "Unhandled API error method=%s path=%r",
+                request.method,
+                request.url.path,
+            )
+            return JSONResponse(
+                status_code=500,
+                content=error_content(
+                    code="internal_server_error",
+                    message="Unexpected server error.",
+                ),
+            )
+
     @app.exception_handler(ApplicationError)
     async def handle_application_error(
         _request: Request,
@@ -50,20 +72,5 @@ def register_error_handlers(app: FastAPI) -> None:
             content=error_content(
                 code="validation_error",
                 message="Request validation failed.",
-            ),
-        )
-
-    @app.exception_handler(Exception)
-    async def handle_unexpected_error(request: Request, _error: Exception) -> JSONResponse:
-        logger.error(
-            "Unhandled API error method=%s path=%r",
-            request.method,
-            request.url.path,
-        )
-        return JSONResponse(
-            status_code=500,
-            content=error_content(
-                code="internal_server_error",
-                message="Unexpected server error.",
             ),
         )

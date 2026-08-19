@@ -388,13 +388,18 @@ Các thành phần chính:
 
 Bot và trang quản trị không kết nối trực tiếp tới PostgreSQL. Cả hai đều làm việc qua API để tránh lặp nghiệp vụ và giảm rủi ro truy cập dữ liệu sai cách.
 
-Production dùng Telegram webhook thay vì chạy một polling loop cho từng bot. Mỗi bot có URL chứa public ID và webhook secret riêng:
+Production dùng Telegram webhook thay vì chạy một polling loop cho từng bot. Mỗi
+bot có URL chỉ chứa public ID:
 
 ```text
-POST /webhooks/telegram/{bot_public_id}/{webhook_secret}
+POST /webhooks/telegram/{bot_public_id}
 ```
 
-Server tra bot bằng `bot_public_id`, xác minh secret, lấy `tenant_id` rồi mới xử lý update. Token thật không xuất hiện trong URL.
+Khi đăng ký webhook, hệ thống đặt `secret_token` riêng cho bot. Telegram gửi lại
+giá trị này trong header `X-Telegram-Bot-Api-Secret-Token` trên mỗi update.
+`bot-service` tra bot bằng `bot_public_id`, xác minh secret trong header, lấy
+`tenant_id` rồi mới xử lý update. Bot token và webhook secret không xuất hiện
+trong URL, access log hoặc dữ liệu tracing theo URL.
 
 ## Công nghệ
 
