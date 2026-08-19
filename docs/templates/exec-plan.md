@@ -50,6 +50,19 @@ Promote lasting product or architecture decisions into `docs/decisions/`.
 - Integration or end-to-end proof:
 - Repository-required checks:
 
+## Handoff
+
+- Current branch:
+- Working tree:
+- Delivery state: working-tree only | committed | pushed | pull request opened
+  | merged
+- Commit or pull request:
+- Remaining blockers or follow-up:
+- Next safe action:
+
+Keep this section current whenever work pauses or changes sessions. Delivery on
+a feature branch is not authority on `main` until it is merged.
+
 ## Result
 
 Complete after implementation. Record the verified outcome, limitations, and

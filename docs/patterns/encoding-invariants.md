@@ -53,8 +53,12 @@ The failure must be actionable. Prefer a diagnostic such as:
 
 ```text
 public/orders imports internal/storage: public packages must not import internal
-packages (docs/architecture.md). Depend on the public storage interface instead.
+packages (<accepted-authority-path>). Depend on the public storage interface
+instead.
 ```
+
+Replace `<accepted-authority-path>` with the repository path that states the
+enforced rule.
 
 Avoid bare messages such as `validation failed` or diagnostics that require the
 reader to reverse-engineer the rule.
