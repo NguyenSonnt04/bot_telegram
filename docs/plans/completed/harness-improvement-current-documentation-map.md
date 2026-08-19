@@ -125,6 +125,19 @@ existing consumer authority, avoided the former failed retrievals, and required
 no human steering. The maintenance cost is three small consumer modifications
 that the installed Harness explicitly tracks and can three-way merge.
 
+## Handoff
+
+- Current branch: `docs/current-harness-map`
+- Working tree: clean after the validated documentation commit.
+- Delivery state: committed and pushed to
+  `origin/docs/current-harness-map`; not merged into `main`.
+- Commit or pull request: implementation commit
+  `478bd4933ecbb21b6beee6940d98d0495ce4eb93`; no pull request recorded.
+- Remaining blockers or follow-up: the root README initialization-era status
+  sentence remains separate product-documentation work.
+- Next safe action: review and merge the documentation branch through the
+  repository contribution flow.
+
 ## Result
 
 The current documentation route now describes this repository rather than the

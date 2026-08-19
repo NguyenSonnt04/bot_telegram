@@ -32,9 +32,9 @@ not overwrite those with upstream product assumptions.
 ## Installed Harness
 
 - [`../AGENTS.md`](../AGENTS.md): agent entrypoint and authority boundary.
-- `.agents/skills/`: installed repository skills.
-- `.harness-core/manifest.json`: installed core version and managed-file
-  provenance.
+- [`../.agents/skills/`](../.agents/skills/): installed repository skills.
+- [`../.harness-core/manifest.json`](../.harness-core/manifest.json): installed
+  core version and managed-file provenance.
 - `../scripts/bin/harness.exe`: Windows maintenance interface for status,
   doctor, install, and conflict-safe updates.
 

@@ -169,8 +169,9 @@ existing durable-plan templates, with no new state system.
 - Working tree: expected clean after the validated documentation commit.
 - Delivery state: committed and pushed to
   `origin/docs/current-harness-map`; not merged into `main`.
-- Commit or pull request: use the current branch tip; no pull request is
-  recorded by this experiment.
+- Commit or pull request: implementation commit
+  `ae463938aea4ff682215e3a49441d969c7f4d9a1`; no pull request is recorded by
+  this experiment.
 - Remaining blockers or follow-up: Harness update dry-run was externally
   blocked by HTTP 429. The API and documentation branches remain outside
   `main`, so a session starting from `main` must inspect remote branch or pull
