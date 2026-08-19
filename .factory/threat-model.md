@@ -1,7 +1,7 @@
 # Threat Model for Telegram Digital Shop
 
-**Last Updated:** 2026-08-17
-**Version:** 1.0.0
+**Last Updated:** 2026-08-19
+**Version:** 1.1.0
 **Methodology:** STRIDE + Natural Language Analysis
 
 ---
@@ -25,8 +25,10 @@ The repository defines three application boundaries:
 
 Only the FastAPI foundation currently has executable code. It exposes
 `GET /health`, `GET /ready`, OpenAPI metadata, and a common public error
-contract. Authentication, tenant context, database access, payment processing,
-file delivery, and the web and bot runtimes are not implemented yet.
+contract. It owns an async SQLAlchemy connection manager, an Alembic migration
+baseline, and a PostgreSQL readiness probe. Authentication, tenant context,
+business-table persistence, payment processing, file delivery, and the web and
+bot runtimes are not implemented yet.
 
 ### Key Components
 
@@ -48,8 +50,9 @@ business data. Payment providers send externally controlled webhooks directly
 to the API service, where signatures, provider identity, amount, order
 reference, and idempotency must be verified before an order or delivery changes.
 
-The current foundation has no persistent data flow. Its public endpoints return
-static process state and safe errors.
+The current foundation opens PostgreSQL connections for readiness checks and
+can apply committed Alembic migrations. It has no business tables or persistent
+application-data flow.
 
 ---
 
@@ -103,9 +106,10 @@ identity and tenant membership before business access.
   - **Input:** No request body.
   - **Validation:** No input is consumed.
   - **Risk:** Probe abuse and minor service fingerprinting.
-- `GET /ready` - FastAPI initialization readiness.
+- `GET /ready` - FastAPI and PostgreSQL readiness.
   - **Input:** No request body.
-  - **Validation:** Reads application lifecycle state.
+  - **Validation:** Reads application lifecycle state and executes `SELECT 1`
+    through the API-owned database connection.
   - **Risk:** Service availability disclosure.
 - `GET /openapi.json` - Framework-generated API metadata.
   - **Input:** No request body.
@@ -230,8 +234,8 @@ details, or logs record credentials or private inventory.
 logs only method and path. Repository authority requires encrypted credentials,
 masked admin responses, and tenant-scoped operations.
 
-**Gaps:** Database query enforcement, secret encryption, object storage
-isolation, response schemas, and log redaction are not implemented.
+**Gaps:** Tenant-scoped database query enforcement, secret encryption, object
+storage isolation, and business response schemas are not implemented.
 
 **Severity:** CRITICAL | **Likelihood:** HIGH
 
@@ -368,11 +372,9 @@ administrator privileges, file upload, and any HIGH or CRITICAL finding.
 
 ### Accepted Risks
 
-1. Current `/ready` verifies only FastAPI lifecycle initialization because
-   database integration does not exist.
-2. Current logs lack request correlation because no authenticated or
+1. Current logs lack request correlation because no authenticated or
    tenant-scoped operation exists yet.
-3. OpenAPI and probe exposure policy is undecided for production.
+2. OpenAPI and probe exposure policy is undecided for production.
 
 ---
 
@@ -384,3 +386,11 @@ administrator privileges, file upload, and any HIGH or CRITICAL finding.
 - Distinguished current FastAPI foundation from planned system behavior.
 - Added Python, FastAPI, Next.js, webhook, tenant-isolation, and data-access
   vulnerability patterns.
+
+### Version 1.1.0 (2026-08-19)
+
+- Added the API-owned async PostgreSQL connection and Alembic migration
+  boundary.
+- Updated readiness behavior to include a safe PostgreSQL connectivity probe.
+- Distinguished migration infrastructure from still-unimplemented
+  tenant-scoped business persistence.

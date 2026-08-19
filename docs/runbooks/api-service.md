@@ -1,15 +1,38 @@
-# Application Runbook: API Service Foundation
+# Application Runbook: API Service
 
 ## Scope
 
-Run and validate the local FastAPI foundation before database integration.
+Run, migrate, and validate the local FastAPI service with its PostgreSQL
+connection.
 
 ## Prerequisites
 
 - Python 3.13.
 - uv available on `PATH`.
 - Dependencies synchronized from the repository root with `uv sync`.
-- No database or external credential is required for the current foundation.
+- PostgreSQL 17 is available.
+- `DATABASE_URL` is configured in the root `.env` with the
+  `postgresql+asyncpg://` driver. Do not place the real value in documentation
+  or command history.
+
+## Migrations
+
+From the repository root, inspect and apply the committed migration chain:
+
+```powershell
+uv run alembic -c apps/api-service/alembic.ini current
+uv run alembic -c apps/api-service/alembic.ini upgrade head
+```
+
+Create future revisions only after importing the affected SQLAlchemy metadata
+into `apps/api-service/migrations/env.py`:
+
+```powershell
+uv run alembic -c apps/api-service/alembic.ini revision --autogenerate -m "<change>"
+```
+
+Review generated migrations before applying them. Do not edit a database schema
+manually after persistent data exists.
 
 ## Start
 
@@ -20,8 +43,9 @@ uv run uvicorn api_service.main:app --host 127.0.0.1 --port 8000
 ```
 
 The command starts one local API process on host `127.0.0.1` and fixed port
-`8000`. The process reads optional `APP_ENV` and `LOG_LEVEL` values from the
-environment or root `.env`; their defaults are `development` and `INFO`.
+`8000`. The process reads `DATABASE_URL` and optional `APP_ENV` and `LOG_LEVEL`
+values from the environment or root `.env`; application and logging defaults
+are `development` and `INFO`.
 
 ## Readiness
 
@@ -33,12 +57,15 @@ Invoke-RestMethod http://127.0.0.1:8000/ready
 ```
 
 The expected responses are `{"status":"ok"}` and `{"status":"ready"}`.
-Readiness currently proves only that the FastAPI application initialized. It
-does not probe PostgreSQL.
+Readiness proves that the FastAPI application initialized and PostgreSQL
+responded to `SELECT 1`. A missing configuration or failed database probe
+returns `503` with the public error contract.
 
 ## Deterministic State
 
-No persistent application state is created by the current foundation.
+Starting the API creates no application data. Running `alembic upgrade head`
+creates or advances Alembic's version state and applies committed schema
+migrations.
 
 ## Interface
 
@@ -70,15 +97,18 @@ uv lock --check
 uv run pytest
 uv run ruff format --check .
 uv run ruff check .
+uv run alembic -c apps/api-service/alembic.ini heads
 ```
 
 For real-interface validation, start the API, retrieve `/health`, `/ready`, and
 `/openapi.json`, then request an unknown path and confirm a `404` response using
-the public error contract.
+the public error contract. A successful `/ready` response is also the
+consumer-facing PostgreSQL connectivity check.
 
 ## Unknowns
 
-- PostgreSQL readiness criteria will be defined with database foundation.
 - Production worker count, bind address, process manager, and deployment
   lifecycle are not yet defined.
 - Request correlation and structured logging are not yet implemented.
+- Tenant, membership, and business-table schemas remain pending their focused
+  product and authorization design.
