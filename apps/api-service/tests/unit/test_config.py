@@ -4,6 +4,12 @@ from pydantic import ValidationError
 from api_service.config import API_V1_PREFIX, Settings
 
 
+@pytest.fixture(autouse=True)
+def isolate_settings_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("APP_ENV", raising=False)
+    monkeypatch.delenv("LOG_LEVEL", raising=False)
+
+
 def test_settings_have_safe_development_defaults() -> None:
     settings = Settings(_env_file=None)
 

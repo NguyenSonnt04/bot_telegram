@@ -31,12 +31,14 @@ def test_unexpected_error_does_not_expose_exception_details(
     app: FastAPI,
     caplog,
 ) -> None:
+    sensitive_marker = "sensitive-uvicorn-marker-7f39"
+
     @app.get("/api/v1/unexpected-error")
     async def unexpected_error() -> None:
-        raise RuntimeError("sensitive implementation detail")
+        raise RuntimeError(sensitive_marker)
 
     with caplog.at_level(logging.ERROR):
-        with TestClient(app, raise_server_exceptions=False) as client:
+        with TestClient(app) as client:
             response = client.get("/api/v1/unexpected-error")
 
     assert response.status_code == 500
@@ -46,8 +48,8 @@ def test_unexpected_error_does_not_expose_exception_details(
             "message": "Unexpected server error.",
         }
     }
-    assert "sensitive implementation detail" not in response.text
-    assert "sensitive implementation detail" not in caplog.text
+    assert sensitive_marker not in response.text
+    assert sensitive_marker not in caplog.text
     assert "method=GET path='/api/v1/unexpected-error'" in caplog.text
 
 

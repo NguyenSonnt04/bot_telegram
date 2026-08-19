@@ -115,7 +115,9 @@ identity and tenant membership before business access.
 #### Planned Public HTTP Interfaces
 
 - `/api/v1/*` browser and bot business operations.
-- `/webhooks/telegram/{bot_public_id}/{webhook_secret}` Telegram updates.
+- `/webhooks/telegram/{bot_public_id}` Telegram updates authenticated with the
+  `X-Telegram-Bot-Api-Secret-Token` header configured through Telegram's
+  `secret_token` webhook setting.
 - SePay and Binance Pay webhook routes owned by `api-service`.
 - Product and inventory upload routes owned by the admin surface.
 
