@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Python quality and PostgreSQL integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: tele_shop_test
+          POSTGRES_USER: tele_shop_ci
+          POSTGRES_PASSWORD: ci-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tele_shop_ci -d tele_shop_test"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://tele_shop_ci:ci-only-password@127.0.0.1:5432/tele_shop_test
+      REQUIRE_DATABASE_TESTS: "1"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          enable-cache: true
+          python-version: "3.13"
+
+      - name: Verify dependency lock
+        run: uv lock --check
+
+      - name: Synchronize workspace
+        run: uv sync --frozen
+
+      - name: Check formatting
+        run: uv run --no-sync ruff format --check .
+
+      - name: Run lint
+        run: uv run --no-sync ruff check .
+
+      - name: Apply database migrations
+        run: uv run --no-sync alembic -c apps/api-service/alembic.ini upgrade head
+
+      - name: Check migration drift
+        run: uv run --no-sync alembic -c apps/api-service/alembic.ini check
+
+      - name: Run tests
+        run: uv run --no-sync pytest -q
