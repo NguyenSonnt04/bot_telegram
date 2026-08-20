@@ -121,6 +121,26 @@ For real-interface validation, start the API, retrieve `/health`, `/ready`, and
 the public error contract. A successful `/ready` response is also the
 consumer-facing PostgreSQL connectivity check.
 
+## Continuous Integration
+
+GitHub Actions runs `.github/workflows/ci.yml` for pull requests and pushes to
+`main`. The workflow uses Python 3.13, the committed uv lockfile, and an
+ephemeral PostgreSQL 17 service. It runs:
+
+- `uv lock --check` and `uv sync --frozen`;
+- Ruff formatting and lint checks;
+- Alembic upgrade and model-to-schema drift detection; and
+- the complete Pytest suite with the PostgreSQL cross-tenant isolation proof
+  required rather than skipped.
+
+`REQUIRE_DATABASE_TESTS=1` converts a missing CI `DATABASE_URL` into an
+actionable test failure. Local runs without that flag may still skip the
+PostgreSQL-only proof when no database is configured.
+
+The checked-in workflow proves only that CI is configured to invoke these
+checks. Whether GitHub branch protection requires the workflow before merge is
+configured externally and must be verified separately.
+
 ## Unknowns
 
 - Production worker count, bind address, process manager, and deployment

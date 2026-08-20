@@ -39,7 +39,12 @@ def test_readiness_returns_service_unavailable_when_state_is_not_ready(
 
 def test_readiness_requires_database_configuration() -> None:
     app = create_app(
-        Settings(app_env="test", log_level="CRITICAL", _env_file=None),
+        Settings(
+            app_env="test",
+            log_level="CRITICAL",
+            database_url=None,
+            _env_file=None,
+        ),
     )
 
     with TestClient(app) as client:
